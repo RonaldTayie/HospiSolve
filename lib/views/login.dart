@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hospisolve/views/BaseView.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -74,7 +75,9 @@ class _LoginViewState extends State<LoginView> {
                     const Spacer(flex: 1,),
                   ],
                 ),
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>BaseView()));
+                },
               ),
             )
           ],
