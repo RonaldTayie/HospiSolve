@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "780367220728",
+    "project_id": "hospisolve",
+    "storage_bucket": "hospisolve.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780367220728:android:cbf798667790e856ba100d",
+        "android_client_info": {
+          "package_name": "com.hospisolve.hospisolve"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5LMlDtT1O-tFM6gktj8d3QDHx674E-XY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780367220728:android:22eb1e378bfd03dfba100d",
+        "android_client_info": {
+          "package_name": "com.richfield.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5LMlDtT1O-tFM6gktj8d3QDHx674E-XY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

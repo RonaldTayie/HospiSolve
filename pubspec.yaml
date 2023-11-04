@@ -18,8 +18,10 @@ dependencies:
   provider: ^6.0.3
   flutter_svg: ^2.0.2
   firebase_core: ^2.12.0
+  firebase_auth: ^4.12.1
   typicons_flutter: ^0.5.0
   awesome_notifications: ^0.6.21
+  intl:
 
 
 dev_dependencies:
@@ -61,3 +63,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
