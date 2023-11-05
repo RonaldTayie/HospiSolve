@@ -34,3 +34,8 @@ ThemeData AppTheme = ThemeData(
   scaffoldBackgroundColor: const Color.fromRGBO(4, 31, 48, 1.0),
   useMaterial3: true,
 );
+
+
+// Networking:
+
+const String host = "102.130.122.150:4000";

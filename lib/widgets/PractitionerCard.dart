@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class PractionerCard extends StatefulWidget {
-  const PractionerCard({super.key});
+class PractionerCard extends StatelessWidget {
 
-  @override
-  State<PractionerCard> createState() => _PractionerCardState();
-}
+  final String full_name;
+  final String department;
+  final String number;
+  const PractionerCard({super.key,  required this.department, required this.number, required this.full_name });
 
-class _PractionerCardState extends State<PractionerCard> {
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -39,41 +38,41 @@ class _PractionerCardState extends State<PractionerCard> {
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(55)),
                     child: SvgPicture.asset(
-                      'assets/images/undraw_female_avatar_efig.svg',
+                      'assets/images/undraw_doctors_p6aq.svg',
                       semanticsLabel: "",
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Text(
-                      "Title. Initial Surname",
-                      style: TextStyle(
+                      full_name,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    Divider(height: 20),
+                    const Divider(height: 20),
                     Text(
-                      "Doctors basic information",
-                      style: TextStyle(
+                      department,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    Divider(height: 10),
+                    const Divider(height: 10),
                     Text(
-                      "Ward : ",
-                      style: TextStyle(
+                      number,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontSize: 10,
                         fontWeight: FontWeight.w700,

@@ -1,22 +1,22 @@
 class Patient {
   late String uuid;
-  late final int patientId;
+  late final String patientId;
   late final String firstName;
   late final String lastName;
   late final String gender;
   late final DateTime dateOfBirth;
   late final String contactNumber;
-  late final String email;
+  late String email;
   late final String residentialAddress;
   late final String postalAddress;
   late final List<String> allergies;
   late final bool? medicalAid;
-  late final String medicalAidProvider;
-  late final String medicalAidNumber;
-  late final String medicalAidPlan;
+  late final String? medicalAidProvider;
+  late final String? medicalAidNumber;
+  late final String? medicalAidPlan;
 
   Patient({
-    this.uuid="",
+    this.uuid = "",
     required this.patientId,
     required this.firstName,
     required this.lastName,
@@ -28,42 +28,45 @@ class Patient {
     required this.allergies,
     required this.email,
     this.medicalAid,
-    required this.medicalAidProvider,
-    required this.medicalAidNumber,
-    required this.medicalAidPlan,
+    this.medicalAidProvider,
+    this.medicalAidNumber,
+    this.medicalAidPlan,
   });
 
-  // Getters for all attributes
-  String get getUuid => uuid;
-  int get getPatientId => patientId;
-  String get getFirstName => firstName;
-  String get getLastName => lastName;
-  String get getGender => gender;
-  DateTime get getDateOfBirth => dateOfBirth;
-  String get getContactNumber => contactNumber;
-  String get getEmail => email;
-  String get getResidentialAddress => residentialAddress;
-  String get getPostalAddress => postalAddress;
-  List<String> get getAllergies => allergies;
-  bool? get getMedicalAid => medicalAid;
-  String get getMedicalAidProvider => medicalAidProvider;
-  String get getMedicalAidNumber => medicalAidNumber;
-  String get getMedicalAidPlan => medicalAidPlan;
+  Map<String, dynamic> toMap() {
+    return {
+      "uuid": uuid,
+      "patient_id": patientId,
+      "first_name": firstName,
+      "last_name": lastName,
+      "gender": gender,
+      "date_of_birth": dateOfBirth.toIso8601String(),
+      "contact_number": contactNumber,
+      "email": email,
+      "residential_address": residentialAddress,
+      "postal_address": postalAddress.isNotEmpty?postalAddress:"",
+      "allergies": allergies.toList().toString(),
+      "medical_aid": medicalAid.toString(),
+      "medical_aid_provider": medicalAidProvider,
+      "medical_aid_number": medicalAidNumber,
+      "medical_aid_plan": medicalAidPlan,
+    };
+  }
 
-  // Setters for attributes that can be modified
-  set setUuid(String value) => uuid = value;
-  set setPatientId(int value) => patientId = value;
-  set setFirstName(String value) => firstName = value;
-  set setLastName(String value) => lastName = value;
-  set setGender(String value) => gender = value;
-  set setDateOfBirth(DateTime value) => dateOfBirth = value;
-  set setContactNumber(String value) => contactNumber = value;
-  set setEmail(String value) => email = value;
-  set setResidentialAddress(String value) => residentialAddress = value;
-  set setPostalAddress(String value) => postalAddress = value;
-  set setAllergies(List<String> value) => allergies = value;
-  set setMedicalAid(bool? value) => medicalAid = value;
-  set setMedicalAidProvider(String value) => medicalAidProvider = value;
-  set setMedicalAidNumber(String value) => medicalAidNumber = value;
-  set setMedicalAidPlan(String value) => medicalAidPlan = value;
+  Patient.fromMap(Map<String, dynamic> patientMap)
+      : uuid = patientMap['uuid'],
+        patientId = patientMap['patient_id'],
+        firstName = patientMap['first_name'],
+        lastName = patientMap['last_name'],
+        gender = patientMap['gender'],
+        dateOfBirth = DateTime.parse(patientMap['date_of_birth']),
+        contactNumber = patientMap['contact_number'],
+        email = patientMap['email'],
+        residentialAddress = patientMap['residential_address'],
+        postalAddress = patientMap['postal_address'],
+        allergies = List<String>.from(patientMap['allergies']),
+        medicalAid = patientMap['medical_aid'],
+        medicalAidProvider = patientMap['medical_aid_provider'],
+        medicalAidNumber = patientMap['medical_aid_number'],
+        medicalAidPlan = patientMap['medical_aid_plan'];
 }

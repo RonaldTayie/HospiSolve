@@ -7,7 +7,6 @@ import '../widgets/AuthViewTextField.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
-
   @override
   State<RegisterView> createState() => _RegisterViewState();
 }
@@ -75,6 +74,12 @@ class _RegisterViewState extends State<RegisterView> {
                       change: (e) => {_patientProvider.setContactNumber(e)},
                       type: TextInputType.phone,
                     ),
+                    AuthViewTextField(
+                      label: "ID number",
+                      icon: const Icon(Icons.badge_outlined),
+                      change: (e) => {_patientProvider.setPatientId(e)},
+                      type: TextInputType.number,
+                    ),
                     Container(
                       width: double.infinity,
                       height: 90,
@@ -107,7 +112,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 ),
                               ).then((value) => {
                                 if(value!=null) {
-                                  _patientProvider.setDateOfBirth(value)
+                                  _patientProvider.setDateOfBirth(DateTime.parse(value))
                                 }
                               }
                               );

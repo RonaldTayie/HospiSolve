@@ -21,7 +21,9 @@ dependencies:
   firebase_auth: ^4.12.1
   typicons_flutter: ^0.5.0
   awesome_notifications: ^0.6.21
+  http: ^1.1.0
   intl:
+  web_socket_channel: ^2.4.0
 
 
 dev_dependencies:

@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hospisolve/models/Patient.dart';
+import 'package:hospisolve/services/DataService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert' as convert;
 
 class AuthServiceProvider extends ChangeNotifier {
 
+  final DataService _dataService = DataService();
   //plugins
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -34,20 +36,36 @@ class AuthServiceProvider extends ChangeNotifier {
   }
 
 
+  Future<bool> logout() async{
+    _prefs = await SharedPreferences.getInstance();
+    await _auth.signOut().then((value) {
+      _prefs.remove("uid");
+      _prefs.remove("token");
+      _prefs.remove("patient");
+    });
+    return true;
+  }
 
   Future<bool> Signin() async {
     _prefs = await SharedPreferences.getInstance();
     try {
       String uid = await _auth
           .signInWithEmailAndPassword(email: _email, password: _password)
-          .then((value) => value.user!.uid);
+          .then((value) async {
+            _prefs.setString("uid",value.user!.uid );
+            await value.user!.getIdToken(true).then((tk)=>{
+              if(tk!=null){
+                _prefs.setString("token", tk)
+              }
+            });
+            return value.user!.uid;
+          });
       if (uid.isNotEmpty) {
-        //
-        // Object? data = snap!.data();
-        // Account? user =
-        // Account.fromMap(convert.jsonDecode(convert.jsonEncode(data)));
-        // await _prefs.setString("Patient", convert.jsonEncode(user.toMap()));
-        return true;
+        return await getSignedInPatient(uid: uid).then((v){
+          print(v);
+          return v!=null;
+        });
+
       }else{
         return false;
       }
@@ -56,24 +74,43 @@ class AuthServiceProvider extends ChangeNotifier {
     }
   }
 
+  Future<Patient?> getSignedInPatient({required String uid}) async {
+    return _dataService.networkGetRequest( url: "/patient/getprofile/$uid").then((value)  {
+      print(value);
+    });
+
+  }
+  Future<bool> _registerNewPatient({required String uid, required Map<String,dynamic> data, required String token}) async {
+    return await _dataService.networkPostRequest( url: "patient/createprofile/${uid}",body:data).then((value){
+      print(convert.jsonEncode(data));
+      if(value!=null){
+        _dataService.writeData(key: "patient", value: value);
+        return true;
+      }else{
+        // Save an instance of the user to SharedPreferences. TODO Remove once main is working
+        _dataService.writeData(key: "patient", value: convert.jsonEncode(data));
+        return true;
+      }
+    });
+  }
+
   Future<bool> Signup({required String Password, required Patient patient}) async {
-    UserCredential? reg = await _auth.createUserWithEmailAndPassword(
-        email: patient.email, password: Password);
+    _prefs = await SharedPreferences.getInstance();
+    String token = _prefs.get("token")!.toString();
+    String uid = _prefs.get("uid")!.toString();
 
-    // setUid(reg.user!.uid);
-    // Account user = Account(
-    //   description: "",
-    //   firstname: firstname,
-    //   lastname: lastname,
-    //   email: email,
-    //   gender: gender,
-    //   handlename: "",
-    //   photo: "",
-    //   uid: uid,
-    // );
-    // await addUser(uid, user);
-
-    return reg.user!.uid != null;
+    return await _auth.createUserWithEmailAndPassword(email: patient.email, password: Password).then((value) async {
+      return value.user!.getIdToken(true).then((token) async {
+        if(token!=null){
+          String uid = value.user!.uid;
+          _prefs.setString("uid",uid);
+          _prefs.setString("token", token as String);
+          return await _registerNewPatient(data: patient.toMap(), token: token, uid:uid);
+        }else{
+          return false;
+        }
+      });
+    });
   }
 
 }

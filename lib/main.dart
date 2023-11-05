@@ -6,7 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hospisolve/config/config.dart';
 import 'package:hospisolve/firebase_options.dart';
+import 'package:hospisolve/providers/AuthServiceProvider.dart';
+import 'package:hospisolve/providers/DoctorProvider.dart';
+import 'package:hospisolve/providers/HosiptalEmployeeProvider.dart';
+import 'package:hospisolve/providers/PetientProvider.dart';
 import 'package:hospisolve/providers/QueueProvider.dart';
+import 'package:hospisolve/views/BaseView.dart';
 import 'package:hospisolve/views/LandingView.dart';
 import 'package:hospisolve/views/pages/HomeView.dart';
 import 'package:provider/provider.dart';
@@ -103,7 +108,14 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [ChangeNotifierProvider(create: (_) => QueueProvider())],
+        providers: [
+          ChangeNotifierProvider(create: (_) => QueueProvider()),
+          ChangeNotifierProvider(create: (_) => DoctorProvider()),
+          ChangeNotifierProvider(create: (_) => AuthServiceProvider()),
+          ChangeNotifierProvider(create: (_) => HospitalEmployeeProvider()),
+          ChangeNotifierProvider(create: (_) => QueueProvider()),
+          ChangeNotifierProvider(create: (_) => PatientProvider()),
+        ],
         child: MaterialApp(
           title: 'CouponKeep',
           debugShowCheckedModeBanner: false,
@@ -122,22 +134,19 @@ class _MyAppState extends State<MyApp> {
                       if (result == true) {
                         action.onData((receivedNotification) => {
                           if (Navigator.of(context).isCurrent("/notification")) {
-                            // print("Replacing route");
                             Navigator.pushReplacementNamed(context, "/notification",
                                 arguments: receivedNotification.payload)
                           } else {
                             if (Navigator.of(context).isCurrent("/")) {
-                              // print("Push new route");
                               Navigator.pushNamed(context, "/notification",
                                   arguments: receivedNotification.payload)
                             } else {
-                              // print("Replace current route.");
                               Navigator.pushReplacementNamed(
                                   context, "/notification",
                                   arguments: receivedNotification.payload)
                             }
                           }});
-                        return const HomeView();
+                        return const BaseView();
                       } else {
                         return const LandingView();
                       }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hospisolve/providers/QueueProvider.dart';
 import 'package:hospisolve/views/pages/HomeView.dart';
+import 'package:hospisolve/views/pages/ProfileView.dart';
 
 class BaseView extends StatefulWidget {
   const BaseView({super.key});
@@ -8,17 +10,42 @@ class BaseView extends StatefulWidget {
 }
 
 class _BaseViewState extends State<BaseView> {
+  late QueueProvider _queueProvider;
+  final PageController _pageController = PageController();
+  int currentNav = 0;
+  @override
+  void initState() {
+    setState(() {
+      _queueProvider = QueueProvider();
+    });
+    super.initState();
+  }
+
+  void updateNav(int page){
+    setState(() {
+      currentNav = page;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(children: [
-        HomeView()
-      ],),
+      body: PageView(
+        controller: _pageController,
+        children: const [
+          HomeView(),
+          ProfileView()
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
+        currentIndex:currentNav ,
+        onTap: (i){
+          updateNav(i);
+          _pageController.animateToPage(i, duration: const Duration(milliseconds: 100), curve: Curves.linear);
+        },
+        backgroundColor: const Color.fromRGBO(4, 31, 48, .9),
+        selectedItemColor: Theme.of(context).cardTheme.surfaceTintColor,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home),label: "home"),
-          BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: "profile"),
           BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: "profile"),
         ],
       ),

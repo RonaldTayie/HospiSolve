@@ -4,7 +4,7 @@ import 'package:hospisolve/models/Patient.dart';
 class PatientProvider with ChangeNotifier {
 
   late Patient _patient;
-  late int _patientId = 0;
+  late String _patientId = "";
   late String _firstName = "";
   late String _lastName = "";
   late String _gender="M";
@@ -20,7 +20,7 @@ class PatientProvider with ChangeNotifier {
   late String _medicalAidPlan = "";
 
   Patient get patient => _patient;
-  int get patientId => _patientId;
+  String get patientId => _patientId;
   String get firstName => _firstName;
   String get lastName => _lastName;
   String get gender => _gender;
@@ -53,7 +53,7 @@ class PatientProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setPatientId(int patientId) {
+  void setPatientId(String patientId) {
     _patientId = patientId;
     notifyListeners();
   }
@@ -78,8 +78,8 @@ class PatientProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setContactNumber(String contactNumber) {
-    _contactNumber = contactNumber;
+  void setContactNumber(String mobile) {
+    _contactNumber = mobile;
     notifyListeners();
   }
 
@@ -108,17 +108,17 @@ class PatientProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setMedicalAidProvider(String medicalAidProvider) {
+  void setMedicalAidProvider(medicalAidProvider) {
     _medicalAidProvider = medicalAidProvider;
     notifyListeners();
   }
 
-  void setMedicalAidNumber(String medicalAidNumber) {
+  void setMedicalAidNumber(medicalAidNumber) {
     _medicalAidNumber = medicalAidNumber;
     notifyListeners();
   }
 
-  void setMedicalAidPlan(String medicalAidPlan) {
+  void setMedicalAidPlan(medicalAidPlan) {
     _medicalAidPlan = medicalAidPlan;
     notifyListeners();
   }
