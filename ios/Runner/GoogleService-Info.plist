@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyBR1SYPsGrsPH2TmdAF4NNOX1po0ZIRBIg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>780367220728</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.hospisolve.hospisolve</string>
+	<key>PROJECT_ID</key>
+	<string>hospisolve</string>
+	<key>STORAGE_BUCKET</key>
+	<string>hospisolve.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:780367220728:ios:7fb9f8cc8bf48ce3ba100d</string>
+</dict>
+</plist>

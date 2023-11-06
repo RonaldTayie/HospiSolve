@@ -1,31 +1,73 @@
+import 'dart:async';
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hospisolve/config/config.dart';
-import 'package:hospisolve/views/login.dart';
+import 'package:hospisolve/firebase_options.dart';
+import 'package:hospisolve/providers/AuthServiceProvider.dart';
+import 'package:hospisolve/providers/DoctorProvider.dart';
+import 'package:hospisolve/providers/HosiptalEmployeeProvider.dart';
+import 'package:hospisolve/providers/PetientProvider.dart';
+import 'package:hospisolve/providers/QueueProvider.dart';
+import 'package:hospisolve/views/BaseView.dart';
+import 'package:hospisolve/views/LandingView.dart';
+import 'package:hospisolve/views/pages/HomeView.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'RouteGenerator.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Awesome notification initialization
+  AwesomeNotifications().initialize(
+    // set the icon to null if you want to use the default app icon
+    'resource://drawable/notif_icon',
+    [
+      NotificationChannel(
+        channelKey: NotificationChannelKey,
+        channelName: NotificationChannelName,
+        channelDescription: CounterNotification,
+        defaultColor: AppTheme.primaryColorDark,
+        ledColor: AppTheme.cardTheme.surfaceTintColor,
+      )
+    ],
+  );
+  AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    if (!isAllowed) {
+      AwesomeNotifications().requestPermissionToSendNotifications();
+    }
+  });
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(const MyApp(
+      title: 'Hospisolve',
+    ));
+  });
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     return  SafeArea(
+//         child:MaterialApp(
+//           debugShowCheckedModeBanner: false,
+//           title: 'Hospisolve',
+//           theme: AppTheme,
+//           themeMode: ThemeMode.dark,
+//           home: const LoginView(),
+//         )
+//     );
+//   }
+// }
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return  SafeArea(
-        child:MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Hospisolve',
-          theme: AppTheme,
-          themeMode: ThemeMode.dark,
-          home: const LoginView(),
-        )
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class MyApp extends StatefulWidget {
+  const MyApp({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -39,75 +81,81 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyApp> createState() => _MyAppState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MyAppState extends State<MyApp> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  final StreamSubscription<ReceivedAction> action = AwesomeNotifications()
+      .actionStream
+      .listen((receivedNotification) => receivedNotification);
+
+  Future isLoggedIn() async {
+    return _auth.currentUser != null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => QueueProvider()),
+          ChangeNotifierProvider(create: (_) => DoctorProvider()),
+          ChangeNotifierProvider(create: (_) => AuthServiceProvider()),
+          ChangeNotifierProvider(create: (_) => HospitalEmployeeProvider()),
+          ChangeNotifierProvider(create: (_) => QueueProvider()),
+          ChangeNotifierProvider(create: (_) => PatientProvider()),
+        ],
+        child: MaterialApp(
+          title: 'CouponKeep',
+          debugShowCheckedModeBanner: false,
+          initialRoute: "/",
+          onGenerateRoute: RouteGenerator.generateRoute,
+          theme: AppTheme,
+          home: SafeArea(
+            child: Scaffold(
+              body: FutureBuilder(
+                  future: isLoggedIn(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const LandingView();
+                    } else if (snapshot.connectionState == ConnectionState.done) {
+                      bool result = snapshot.data as bool;
+                      if (result == true) {
+                        action.onData((receivedNotification) => {
+                          if (Navigator.of(context).isCurrent("/notification")) {
+                            Navigator.pushReplacementNamed(context, "/notification",
+                                arguments: receivedNotification.payload)
+                          } else {
+                            if (Navigator.of(context).isCurrent("/")) {
+                              Navigator.pushNamed(context, "/notification",
+                                  arguments: receivedNotification.payload)
+                            } else {
+                              Navigator.pushReplacementNamed(
+                                  context, "/notification",
+                                  arguments: receivedNotification.payload)
+                            }
+                          }});
+                        return const BaseView();
+                      } else {
+                        return const LandingView();
+                      }
+                    } else {
+                      return const LandingView();
+                    }
+                  }),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+          ),
+        ));
   }
 }
