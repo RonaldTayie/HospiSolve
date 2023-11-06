@@ -46,7 +46,7 @@ class DoctorProvider with ChangeNotifier {
   Future<void> loadDoctors()async{
     _dataService.networkGetRequest(url: "/doctors/getall").then((value){
       List<String> doctors = List.empty(growable: true);
-      if(value !=null){
+      if(value !=null && value != "retry"){
         Map<String,dynamic> doctors_response = convert.jsonDecode(value);
         doctors_response['data']?.forEach((element) {
           Map<String,dynamic> doc = Map.of(element);
